@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function($scope) {
+  /* widget controller */
+  var c = this;
+	
+	$scope.showOrder = function(num){
+		c.data.answer=num;
+		console.log('showOrder():num='+num);
+		c.server.update();
+	}
+	
+};]]></client_script>
+        <controller_as>c</controller_as>
+        <css>td{
+  padding:10px;
+}</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>test_dawn</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>test_dawn</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+  /* populate the 'data' object */
+  /* e.g., data.table = $sp.getValue('table'); */
+	//running from c.server.update()
+	if(input){
+		console.log("serverScriptAnswer: "+input.answer);
+	}
+	
+	
+	data.userName = gs.getUserDisplayName();
+	data.table={
+		"list":[]
+	};
+	
+	var GR = new GlideRecord('incident');
+	GR.addEncodedQuery('active=true^category=software^stateIN2,3');
+	GR.orderBy('number');
+	GR.query();
+	while(GR.next()){
+		var obj = {}
+		obj.name = GR.getDisplayValue('caller_id');
+		obj.order= GR.getValue('number');
+		data.table.list.push(obj);
+	}
+	//gs.info(JSON.stringify(data.table.list));
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2020-11-09 11:12:32</sys_created_on>
+        <sys_id>af55bdb62fd020108879ff1df699b615</sys_id>
+        <sys_mod_count>19</sys_mod_count>
+        <sys_name>test_dawn</sys_name>
+        <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
+        <sys_update_name>sp_widget_af55bdb62fd020108879ff1df699b615</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2020-11-09 12:50:21</sys_updated_on>
+        <template><![CDATA[<div>
+  Hello, {{c.data.userName}}!
+  <table class="table-striped">
+    <tr>
+      <th>
+        Name
+      </th>	
+      <th>
+        Order
+      </th>	
+    </tr>
+    <tr ng-repeat="row in c.data.table.list">
+      <td>
+        {{row.name}}
+      </td>
+      <td>
+        {{row.order}}
+      </td>
+      <td>
+        <button class="btn btn-primary" name="orderButton" ng-click="showOrder(row.order)">
+          Order
+        </button>
+      </td>
+    </tr>
+  </table>
+  <!--
+<pre>
+{{c.data.table | json}}
+</pre>
+-->
+</div>]]></template>
+    </sp_widget>
+</record_update>
